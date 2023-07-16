@@ -1,0 +1,3 @@
+# Ignore the settings file
+cepy-Store/Ecomerce/secure_info.py
+cepy-Store/Ecomerce/__pycache__

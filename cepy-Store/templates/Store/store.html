@@ -1,0 +1,94 @@
+{% extends 'parent.html' %}
+{% block content %}
+{% load custom_filter %}
+<!-- Shop Start -->
+<div class="container-fluid">
+    <div class="row px-xl-5">
+        <!-- Shop Product Start -->
+        <div class="col">
+            <div class="row pb-3">
+                <div class="col-12 pb-1">
+                    <div class="d-flex align-items-center justify-content-between mb-4">
+                        <div class="ml-2">
+                            <div class="btn-group">
+                                <button type="button" class="btn btn-sm btn-light dropdown-toggle"
+                                    data-toggle="dropdown">Filter</button>
+                                <div class="dropdown-menu dropdown-menu-right">
+                                    <!-- Shop Sidebar Start -->
+                                        <!-- Price Start -->
+                                        <h6 class="section-title position-relative text-uppercase mb-3"><span
+                                                class="bg-secondary pr-3">Price</span></h6>
+                                        <div class="bg-light p-4 mb-30">
+                                            <form method="get" action="{% url 'Filter' %}">
+                                                {{form_price.min_price}}
+                                                {{form_price.max_price}}
+                                        </div>
+                                        <!-- Price End -->
+                                        <!-- Category Start -->
+                                        <h6 class="section-title position-relative text-uppercase mb-3"><span
+                                                class="bg-secondary pr-3">Filter by category</span></h6>
+                                        <div class="bg-light p-4 mb-30">
+                                            {{form_category}}
+                                            <button class="btn btn-outline-dark" action="submit">Filter</button>
+                                            </form>
+                                        </div>
+                                    <!-- Shop Sidebar End -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Product Card -->
+                {% if products %}
+                {% for product in products %}
+                <div class="col-lg-3 col-sm-6 pb-1">
+                    <div class="product-item bg-light mb-4">
+                        <div class="product-img position-relative overflow-hidden">
+                            <a href="{{ product.default_image.url }}"><img class="img-fluid w-100" src="{{ product.default_image_thumbnail.url }}" alt="{{product.name}} image"></a>
+                        </div>
+                        <div class="text-center py-4">
+                            <a class="h6 text-decoration-none text-truncate" href="{% url 'Details' product.id %}">{{ product.name }}</a>
+                            <div class="d-flex align-items-center justify-content-center mt-2">
+                                {% if product.discount %}
+                                <h5>${{product.discount_price}}</h5>
+                                <span>
+                                    <h6 class="text-muted ml-2"><del>${{product.price}}</del></h6>
+                                </span>
+                                <span class="badge badge-success ml-2">{{product.discount}}%</span>
+                                {% else %}
+                                <h5>${{product.price}}</h5>
+                                {% endif %}
+                            </div>
+                            <div class="rating-stars text-primary mb-2">
+                                {% for i in rating_stars %}
+                                {% if product.rating >= i|rest:0.25 %}
+                                <i class="fas fa-star"></i>
+                                {% elif product.rating >= i|rest:0.75 %}
+                                <i class="fas fa-star-half-alt"></i>
+                                {% else %}
+                                <i class="far fa-star"></i>
+                                {% endif %}
+                                {% endfor %}
+                                <small style="color: black;" id="review-length-details" class="pt-1">({{product.review_length }})</small>
+                            </div>
+                            {% if product.available %}<div class="badge badge-success">Available</div>{% else %}<div class="badge badge-danger">Not available</div>{% endif %}
+                            <a class="btn btn-primary" href="{% url 'Details' product.id %}">Details</a>
+                            <a class="btn btn-primary add-to-cart" data-product-id="{{ product.id }}"
+                                data-csrf-token="{{ csrf_token }}">Add to Cart</a>
+                        </div>
+                        {% include 'pop_message.html'%}
+                    </div>
+                </div>
+                {% endfor %}
+                {% else %}
+                <h3>Products not found</h3>
+                {% endif %}
+            </div>
+        </div>
+        <!-- Shop Product End -->
+    </div>
+</div>
+<!-- Shop End -->
+
+
+{% endblock %}

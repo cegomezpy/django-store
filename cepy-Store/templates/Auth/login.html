@@ -1,0 +1,13 @@
+{% extends 'parent.html'%}
+{% load crispy_forms_tags %}
+{% block content %}
+<div style="color: rgb(32, 30, 30); font-size: large;font-family: sans-serif;" class="intro">
+    <form class="form" method="POST" action="">
+        {% csrf_token%}
+        {{form | crispy}}
+        <input type="submit" class="btn btn-success">
+    </form>
+        
+</div>
+
+{% endblock %}

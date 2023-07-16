@@ -1,0 +1,12 @@
+{% extends 'parent.html' %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+  <h1>Register</h1>
+  <form method="post">
+    {% csrf_token %}
+    {{ creationForm | crispy }}
+    <h6>If you want to retrieve your password in case you forget, enter a valid email</h6>
+    <button type="submit">Register</button>
+  </form>
+{% endblock %}

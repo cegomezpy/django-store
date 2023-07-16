@@ -1,0 +1,59 @@
+<div class="row">
+    <div class="col-md-6">
+        <h4 id="review-length-review" class="mb-4">{{ reviews|length }} reviews for {{ product.name }}</h4>
+        <div id="reviews-section" style="height: 300px; overflow-y: scroll;">
+            {% for review in reviews %}
+            <div id="review-row-{{ review.id }}" class="media mb-4">
+                <div class="media-body">
+                    <h6>{{ review.author.username }}<small> - <i>{{ review.date_created}}</i></small></h6>
+                    <div class="rating-stars text-primary mb-2">
+                        {% for i in rating_stars %}
+                        {% if i <= review.rating %}
+                        <i class="fas fa-star"></i>
+                        {% else %}
+                        <i class="far fa-star"></i>                        
+                        {% endif %}
+                        {% endfor %}
+                    </div>
+                    <p>{{ review.comment }}</p>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% if user.is_authenticated %}
+    <div class="col-md-6">
+        <h4 class="mb-4">Leave a review</h4>
+        <small>Your email address will not be published. Required fields are marked *</small>
+        <div class="d-flex my-3">
+            <p class="mb-0 mr-2">Your Rating * :</p>
+            <div class="rating-stars text-primary mb-2">
+                <i class="fas fa-star star-comment" data-index="1"></i>
+                <i class="fas fa-star star-comment" data-index="2"></i>
+                <i class="fas fa-star star-comment" data-index="3"></i>
+                <i class="fas fa-star star-comment" data-index="4"></i>
+                <i class="fas fa-star star-comment" data-index="5"></i>
+            </div>
+        </div>
+        <form id="review-form" data-csrftoken="{{ csrf_token }}">
+            <input type="hidden" name="product_id" value="{{ product.id }}">
+            {{ review_form.rating}}
+            <div class="form-group">
+                {{ review_form.comment.label_tag }}
+                {{ review_form.comment }}
+                {% if review_form.comment.errors %}
+                <div class="invalid-feedback">
+                  {% for error in review_form.comment.errors %}
+                  <span>{{ error }}</span>
+                  {% endfor %}
+                </div>
+                {% endif %}
+            </div>
+            <button type="submit" class="btn btn-primary">Post</button>
+        </form>
+    </div>
+    {% else %}
+    <h5>You need to log in to comment</h5>
+    {% endif %}
+</div>
+{% include 'pop_message.html' %}
