@@ -1,0 +1,153 @@
+{% extends 'parent.html' %}
+{% block content %}
+{% load custom_filter %}
+<!-- Shop Detail Start -->
+<div class="container-fluid pb-5" id="csrf-token" data-csrf-token="{{csrf_token}}">
+    <div class="row px-xl-5">
+        <div class="col-lg-5 mb-30">
+            <div id="product-carousel" class="carousel slide" data-ride="carousel">
+                <div class="carousel-inner bg-light">
+                    {% for p_image in products_images %}
+                    <div class="carousel-item {% if forloop.first %}active{% endif %}">
+                        <a href="{{ p_image.image.url }}">
+                            <img class="w-100 h-100" src="{{ p_image.image.url }}" alt="Image">
+                        </a>
+                    </div>
+                    {% endfor %}
+                </div>
+                <a class="carousel-control-prev" href="#product-carousel" data-slide="prev">
+                    <i class="fa fa-2x fa-angle-left text-dark"></i>
+                </a>
+                <a class="carousel-control-next" href="#product-carousel" data-slide="next">
+                    <i class="fa fa-2x fa-angle-right text-dark"></i>
+                </a>
+            </div>
+        </div>
+
+        <div class="col-lg-7 h-auto mb-30">
+            <div class="h-100 bg-light p-30">
+                <h3>{{ product.name }}</h3>
+                {% if product.available %}<div class="badge badge-success">Quedan {{ product.in_stock }}</div>{% else %}<div class="badge badge-danger">Not available</div>{% endif %}
+                {% if product.discount %}
+                <h5 class="price-label" data-product-id="{{ product.id }}">${{product.discount_price}}</h5>
+                <span>
+                    <h6 class="text-muted ml-2"><del>${{product.price}}</del></h6>
+                </span>
+                <span class="badge badge-success ml-2">{{product.discount}}%</span>
+                {% else %}
+                <h5 class="price-label" data-product-id="{{ product.id }}">${{product.price}}</h5>
+                {% endif %}
+                <p class="mb-4"></p>
+                {% if header == "events"%}
+                <a class="btn btn-primary btn-square mr-2" href="https://wa.me/5355091046?text=Estoy interesad@ en el evento {{product.name}}"><i
+                    class="fab fa-whatsapp"></i></a>
+                {% else %}
+                <div class="d-flex align-items-center mb-4 pt-2">
+                    <div class="input-group quantity mr-3" style="width: 100px;">
+                        <div class="input-group-btn">
+                            <button class="btn btn-sm btn-primary btn-minus quantity-btn" product-id="{{ product.id }}">
+                                <i class="fa fa-minus"></i>
+                            </button>
+                        </div>
+                        <input type="text" id="quantity-inpt"
+                            class="form-control form-control-sm bg-secondary border-0 text-center quantity-inpt"
+                            data-product-id="{{product.id}}" data-csrf-token="{{csrf_token}}" value=1>
+                        <div class="input-group-btn">
+                            <button class="btn btn-sm btn-primary btn-plus quantity-btn-detail"
+                                product-id="{{ product.id }}">
+                                <i class="fa fa-plus"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <button class="btn btn-primary px-3 add-to-cart" data-csrf-token="{{csrf_token}}"
+                        data-product-id="{{ product.id }}"><i class="fa fa-shopping-cart mr-1"></i> Añadir al Carrito
+                    </button>
+                    <div id="popup" style="z-index: 1050;">
+                        <p id="response-message">Producto añadido al carrito</p>
+                    </div>
+                </div>
+                {% endif %}
+                <div class="d-flex pt-2">
+                    <strong class="text-dark mr-2">Share on:</strong>
+                    <div class="d-inline-flex">
+                        <a class="text-dark px-2" href="https://facebook.com">
+                            <i class="fab fa-facebook-f"></i>
+                        </a>
+                        <a class="text-dark px-2" href="https://twitter.com">
+                            <i class="fab fa-twitter"></i>
+                        </a>
+                        <a class="text-dark px-2" href="https://linkedin.com">
+                            <i class="fab fa-linkedin-in"></i>
+                        </a>
+                        <a class="text-dark px-2" href="https://pinterest.com">
+                            <i class="fab fa-pinterest"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row px-xl-5">
+        <div class="col">
+            <div class="bg-light p-30">
+                <div class="nav nav-tabs mb-4">
+                    <a class="nav-item nav-link text-dark active" data-toggle="tab" href="#tab-pane-1">Descripción</a>
+                    <!--<a class="nav-item nav-link text-dark" data-toggle="tab" href="#tab-pane-2">Reviews ({{ reviews|length }})</a>-->
+                </div>
+                <div class="tab-content">
+                    <div class="tab-pane fade show active" id="tab-pane-1">
+                        <h4 class="mb-3">Descripción del producto</h4>
+                        <p>{{product.description}}</p>
+                    </div>
+                    <div class="tab-pane fade" id="tab-pane-2">
+                        {% include 'review.html' %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Shop Detail End -->
+
+
+<!-- Products Start -->
+<div class="container-fluid py-5">
+    <h2 class="section-title position-relative text-uppercase mx-xl-5 mb-4"><span class="bg-secondary pr-3">También te puede gustar</span></h2>
+    <div class="row px-xl-5">
+        <div class="col">
+            <div class="owl-carousel related-carousel">
+                {% for product in products %}
+                <div class="product-item bg-light">
+                    <div class="product-img position-relative overflow-hidden">
+                        <a href="{{ product.default_image.url }}"><img href="{% url 'Details' header product.id %}" class="img-fluid w-100" src="{{ product.default_image_thumbnail.url }}" alt="{{product.name}} image"></a>
+                    </div>
+                    <div class="text-center py-4">
+                        <a class="h6 text-decoration-none text-truncate" href="{% url 'Details' header product.id %}">{{ product.name }}</a>
+                        <div class="d-flex align-items-center justify-content-center mt-2">
+                            {% if product.discount %}
+                            <h5>${{product.discount_price}}</h5>
+                            <span>
+                                <h6 class="text-muted ml-2"><del>${{product.price}}</del></h6>
+                            </span>
+                            <span class="badge badge-success ml-2">{{product.discount}}%</span>
+                            {% else %}
+                            <h5>${{product.price}}</h5>
+                            {% endif %}
+                            {% if product.available %}
+                            <div class="badge badge-success">Disponible</div>
+                            {% else %}
+                                <div class="badge badge-danger">No Disponible</div>
+                            {% endif %}
+                        </div>
+                        <a class="btn btn-primary" href="{% url 'Details' header product.id %}">Detalles</a>
+                        <a class="btn btn-primary add-to-cart" data-product-id="{{ product.id }}"
+                            data-csrf-token="{{ csrf_token }}">Añadir al carrito</a>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Products End -->
+{% endblock %}

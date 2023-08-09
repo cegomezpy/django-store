@@ -1,0 +1,3 @@
+# Ignore the settings file
+Ecomerce/secure_info.py
+Ecomerce/__pycache__/secure_info.cpython-310.pyc

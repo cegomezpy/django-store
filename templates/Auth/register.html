@@ -1,0 +1,13 @@
+{% extends 'parent.html' %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+  <h1>Registrarse</h1>
+  <h6 class="fw-light">Los campos con asterisco son obligatorios*</h6>
+  <form method="post">
+    {% csrf_token %}
+    {{ creationForm | crispy }}
+    <h6 class="fw-light">La contraseña debe ser alfanumérica y tener más de 8 caracteres*</h6>
+    <button class="btn btn-primary" type="submit">Registrarse</button>
+  </form>
+{% endblock %}

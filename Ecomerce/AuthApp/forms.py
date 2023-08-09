@@ -1,0 +1,43 @@
+from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
+from django.contrib.auth.models import User
+from django import forms
+from ..UserApp.models import Client
+
+class CustomUserCreationForm(UserCreationForm):
+    username = forms.CharField(max_length=250, label="Nombre de Usuario", widget=forms.TextInput(
+            attrs={'class': 'form-control', 'placeholder': 'joedhon'}))
+    nombre = forms.CharField(max_length=250, label="Nombre", widget=forms.TextInput(
+            attrs={'class': 'form-control', 'placeholder': 'Joe'}))
+    apellidos = forms.CharField(max_length=250, required=False, label="Apellidos", widget=forms.TextInput(
+            attrs={'class': 'form-control', 'placeholder': 'Dhon'}))
+    email = forms.EmailField(required=False, label="Email", widget=forms.TextInput(
+            attrs={'class': 'form-control', 'placeholder': 'somename@email.com'}))
+    direccion = forms.CharField(max_length=250, label="Dirección", widget=forms.TextInput(
+            attrs={'class': 'form-control', 'placeholder': 'Calle1 / 2da y 3ra'}))
+    numero_telefonico = forms.CharField(max_length=20, label="Número de móvil", widget=forms.TextInput(
+            attrs={'class': 'form-control', 'placeholder': '5355091046'}))
+    password1 = forms.CharField(label="Contraseña", widget=forms.PasswordInput(
+            attrs={'class': 'form-control', 'placeholder': '********'}))
+    password2 = forms.CharField(label="Repite la Contraseña",widget=forms.PasswordInput(
+            attrs={'class': 'form-control', 'placeholder': '********'}))
+
+    class Meta:
+        model = User
+        fields = ('username', 'nombre', 'apellidos', 'direccion', 'numero_telefonico', 'email', 'password1', 'password2')
+
+    def save(self, commit=True):
+        user = super(CustomUserCreationForm, self).save(commit=False)
+        user.email = self.cleaned_data['email']
+        user.nombre = self.cleaned_data['nombre']
+        user.apellidos = self.cleaned_data['apellidos']
+        client = Client(user=user, address=self.cleaned_data['direccion'], mobile_number=self.cleaned_data['numero_telefonico'])
+        if commit:
+            user.save()
+            client.save()
+        return user
+    
+class CustomUserAuthenticationForm(AuthenticationForm):
+    username = forms.CharField(max_length=250, label="Nombre de Usuario", widget=forms.TextInput(
+            attrs={'class': 'form-control', 'placeholder': 'joedhon'}))
+    password = forms.CharField(max_length=250, label="Contraseña", widget=forms.PasswordInput(
+            attrs={'class': 'form-control', 'placeholder': '********'}))

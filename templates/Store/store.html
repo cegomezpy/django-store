@@ -1,0 +1,134 @@
+{% extends 'parent.html' %}
+{% block content %}
+{% load custom_filter %}
+<!-- Shop Start -->
+<div class="container-fluid">
+    <div class="row px-xl-5">
+        <!-- Shop Product Start -->
+        <div class="col">
+            <div class="row pb-3">
+                <div class="col-12 pb-1">
+                    <div class="d-flex align-items-center justify-content-between mb-4">
+                        <div class="ml-2">
+                            {% if header == "search"%}
+                            {% else %}
+                            <form method="get" action="{% if header == 'products'%}{% url 'Filter' 'products' %}{% else %}{% url 'Filter' 'events'%}{% endif %}">
+                            <div class="btn-group rounded-1" role="group">
+                                <div class="dropdown">
+                                    <button type="button" class="btn btn-secondary dropdown-toggle" data-bs-toggle="dropdown" data-bs-auto-close="outside">Precio</button>
+                                    <ul class="dropdown-menu">
+                                      <li class="p-2">Precio Mínimo{{form_price.min_price}}</li>
+                                      <li class="p-2">Precio Máximo{{form_price.max_price}}</li>
+                                    </ul>
+                                  </div> 
+                                  <div class="dropdown">
+                                    <button type="button" class="btn btn-secondary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false" data-bs-auto-close="outside">Categorías</button>
+                                    <div class="dropdown-menu">
+                                        <div class="p-1">
+                                        <li><h6 class="dropdown-header">Productos</h6></li>
+                                        {% for category in form_category.categories %}
+                                        <div class="p-1">{{category}}</div>
+                                        {% endfor %}
+                                        </div>
+                                    </div>
+                                  </div> 
+                                  <button type="submit" class="btn btn-outline-dark">Filtrar</button>
+                            </div>
+                            </form>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                <!-- Product Card -->
+                {% if query %}
+                    {% if header == "search"%}
+                    {% for i in query %}
+                        {% for product in i%}
+                        <div class="col-lg-3 col-sm-6 pb-1">
+                            <div class="product-item bg-light mb-4">
+                                <div class="product-img position-relative overflow-hidden">
+                                    <a href="{{ product.default_image.url }}"><img class="img-fluid w-100" src="{{ product.default_image_thumbnail.url }}" alt="{{product.name}} image"></a>
+                                </div>
+                                <div class="text-center py-4">
+                                    <a class="h6 text-decoration-none text-truncate" href="{% url 'Details' header product.id %}">{{ product.name }}</a>
+                                    <div class="d-flex align-items-center justify-content-center mt-2">
+                                        {% if product.discount %}
+                                        <h5>${{product.discount_price}}</h5>
+                                        <span>
+                                            <h6 class="text-muted ml-2"><del>${{product.price}}</del></h6>
+                                        </span>
+                                        <span class="badge badge-success ml-2">{{product.discount}}%</span>
+                                        {% else %}
+                                        <h5>${{product.price}}</h5>
+                                        {% endif %}
+                                        {% if product.available %}
+                                        <div class="badge badge-success">Disponible</div>
+                                    {% else %}
+                                        <div class="badge badge-danger">No Disponible</div>
+                                    {% endif %}
+                                    </div>
+                                    <a class="btn btn-primary" href="{% url 'Details' header product.id %}">Detalles</a>
+                                    {% if product.condition %}
+                                    <a class="btn btn-primary add-to-cart" data-product-id="{{ product.id }}"
+                                    data-csrf-token="{{ csrf_token }}">Añadir procucto</a>
+                                    {%else%}
+                                    <a class="btn btn-primary" href="https://wa.me/5355091046?text=Estoy interesad@ en el evento {{product.name}}"><i
+                                        class="fab fa-whatsapp"></i></a>
+                                    {% endif %}
+                                </div>
+                                {% include 'pop_message.html'%}
+                            </div>
+                        </div>
+                        {% endfor %}
+                    {% endfor %}
+                    {% else %}
+                    {% for product in query %}
+                        <div class="col-lg-3 col-sm-6 pb-1">
+                            <div class="product-item bg-light mb-4">
+                                <div class="product-img position-relative overflow-hidden">
+                                    <a href="{{ product.default_image.url }}"><img class="img-fluid w-100" src="{{ product.default_image_thumbnail.url }}" alt="{{product.name}} image"></a>
+                                </div>
+                                <div class="text-center py-4">
+                                    <a class="h6 text-decoration-none text-truncate" href="{% url 'Details' header product.id %}">{{ product.name }}</a>
+                                    <div class="d-flex align-items-center justify-content-center mt-2">
+                                        {% if product.discount %}
+                                        <h5>${{product.discount_price}}</h5>
+                                        <span>
+                                            <h6 class="text-muted ml-2"><del>${{product.price}}</del></h6>
+                                        </span>
+                                        <span class="badge badge-success ml-2">{{product.discount}}%</span>
+                                        {% else %}
+                                        <h5>${{product.price}}</h5>
+                                        {% endif %}
+                                        {% if product.available %}
+                                        <div class="badge badge-success">Disponible</div>
+                                        {% else %}
+                                            <div class="badge badge-danger">No Disponible</div>
+                                        {% endif %}
+                                    </div>
+                                    <a class="btn btn-primary" href="{% url 'Details' header product.id %}">Detalles</a>
+                                    {% if header == "events"%}
+                                    <a class="btn btn-primary" href="https://wa.me/5355091046?text=Estoy interesad@ en el evento {{product.name}}"><i
+                                        class="fab fa-whatsapp"></i></a>
+                                    {% else %}
+                                    <a class="btn btn-primary add-to-cart" data-product-id="{{ product.id }}"
+                                        data-csrf-token="{{ csrf_token }}">Añadir producto</a>
+                                    {% endif %}
+                                </div>
+                                {% include 'pop_message.html'%}
+                            </div>
+                        </div>
+                        {% endfor %}  
+                    {% endif %}
+                {% else %}
+                    <h3>Products not found</h3>
+                {% endif %}
+            </div>
+        </div>
+        <!-- Shop Product End -->
+    </div>
+</div>
+<!-- Shop End -->
+
+
+{% endblock %}

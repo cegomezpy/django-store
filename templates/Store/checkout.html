@@ -1,0 +1,73 @@
+{% extends 'parent.html' %}
+
+{% block content %}
+<!-- Checkout Start -->
+<div class="container-fluid">
+    <div class="row px-xl-5">
+        <!-- Billing Address Start -->
+        {% if message %}"<span><h6 class="alert alert-primary">{% for messages in message %}{{ messages }}{% endfor %}</h6></span>{% endif %}
+        <div class="col-lg-8">
+            <h5 class="section-title position-relative text-uppercase mb-3">
+                <span class="bg-secondary pr-3">Información de pago</span>
+            </h5>
+            <div id="danger">
+                {% if "cart" not in request.session %}
+                <div class="alert alert-danger mt-3" role="alert">
+                  No products in the cart yet
+                </div>
+                {% endif %}
+            </div>
+            {% if user.is_authenticated %}
+            <div class="bg-light p-30 mb-5">
+                <h6>Name: </h6>
+                <p>{{ user.nombre }}</p>
+                <h6>LastName: </h6>
+                <p>{{ user.apellidos }}</p>
+                <h6>email: </h6>
+                <p>{{ user.email }}</p>
+                <h6>Address: </h6>
+                <p>{{ user.client.direccion }}</p>
+                <h6>Mobile Number: </h6>
+                <p>{{ user.client.numero_telefonico }}</p>
+                <a href="{% url 'shipping' %}" class="btn btn-primary">Realizar pedido</a>
+            </div>
+            {% else %}
+            <div class="bg-light p-30 mb-5">
+                <form method="post" action="{% url 'shipping' %}">
+                    {% csrf_token %}
+                    {{ checkout_form.as_p }}
+                    <button type="submit" class="btn btn-primary">Realizar pedido</button>
+                </form>
+            </div>
+            {% endif %}
+        </div>
+        <!-- Billing Address End -->
+
+        <!-- Order Summary Start -->
+        <div class="col-lg-4">
+            <h5 class="section-title position-relative text-uppercase mb-3">
+                <span class="bg-secondary pr-3">Order Summary</span>
+            </h5>
+            <div class="bg-light p-30 mb-5">
+                <div class="border-bottom">
+                    <h6 class="mb-3">Products</h6>
+                    {% for product in products %}
+                    <div class="d-flex justify-content-between">
+                        <p>{{product.quantity}}x{{ product.name }}</p>
+                        <p>${{ product.subtotal }}</p>
+                    </div>
+                    {% endfor %}
+                </div>
+                <div class="pt-2">
+                    <div class="d-flex justify-content-between mt-2">
+                        <h5>Total</h5>
+                        <h5 id="total-import">${{ total }}</h5>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Order Summary End -->
+    </div>
+</div>
+<!-- Checkout End -->
+{% endblock %}
