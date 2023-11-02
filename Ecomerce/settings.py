@@ -26,6 +26,10 @@ ALLOWED_HOSTS = secure_info.ALLOWED_HOSTS
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = secure_info.DEBUG
 
+# RECAPTCHA
+RECAPTCHA_PUBLIC_KEY = '6LciCcwnAAAAAPFnPvuoGSsURy_2A1ZUqJchlakD'
+RECAPTCHA_PRIVATE_KEY = '6LciCcwnAAAAAIsk8UkjF4gM_8toAWSN_LG2OIFg'
+
 # Application definition
 
 INSTALLED_APPS = [
@@ -41,6 +45,8 @@ INSTALLED_APPS = [
     'Ecomerce.StoreApp.CartApp',
     'Ecomerce.StoreApp.CheckoutApp',
     'Ecomerce.ContactApp',
+    'hcaptcha_field',
+    'captcha',
     'crispy_forms',
     'crispy_bootstrap4',
 ]

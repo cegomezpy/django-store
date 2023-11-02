@@ -50,7 +50,7 @@
                 <div class="bg-light p-30 mb-5">
                     <div class="pt-2">
                         <div class="d-flex justify-content-between mt-2">
-                            <div class="dropdown pb-3">
+                            <div id="shipping-spinner" class="dropdown pb-3">
                                 <button id="shipping-tag" class="btn btn-success dropdown-toggle" type="button" data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false">
                                   {%if request.session.shipping %}{% for key in request.session.shipping.keys %}{{key}}{% endfor %}{% else %}Elige un destino{% endif %}
                                 </button>
@@ -79,6 +79,9 @@
                             <h5>Total</h5>
                             <h5 id="total-import">${{ total }}</h5>
                         </div>
+                        <h6 id="shipping-value" class="p-2">* Si la mensajería es solicitada deberá pagarse independientemente de si efectua o no la compra del producto.</h6>
+                        <h6 id="shipping-value" class="p-2">* En caso de no solicitar domicilio deberá recoger el producto el mismo día o el día próximo de haberlo hecho. Si desea guardarlo para recogerlo otro día deberá pagar por anticipado por transferencia.</h6>
+                        <h6 id="shipping-value" class="p-2">* Los mensajeros no entran a casas, pasillos o edificios. El cliente deberá salir a recoger el pedido</h6>
                         <a href="{% url 'Checkout'%}" class="btn btn-block btn-primary font-weight-bold my-3 py-3">Hacer Pedido</a>
                     </div>
                 </div>

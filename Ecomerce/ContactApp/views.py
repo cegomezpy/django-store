@@ -25,5 +25,5 @@ def send_message(request):
                       from_email=email, recipient_list=['dragntsu37@gmail.com'])
             # redirect to contact page
             return redirect("/Contact/?success")
-    form = ContactForm()
-    return render(request, 'contact.html', {'form': form})
+        else:
+            return render(request, "contact.html", {"contact_form":form})

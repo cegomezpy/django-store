@@ -4,6 +4,7 @@ from django.core.mail import send_mail
 from .forms import CheckoutForm
 from ..models import Product
 from .models import Shipping, ShippingProducts
+import datetime
 
 # Create your views here.
 def checkout(request):
@@ -74,23 +75,24 @@ def shipping(request):
     return redirect(url)
 
 def make_message(request, shipping, products):
+    nombre = shipping.user.first_name
     text = ""
     cart = request.session.get('cart')
+    date = shipping.date_created.date()+datetime.timedelta(days=1)
     for i in products:
-        text += f"%0a*id_producto*:{i.id}%0anombre_producto:{i.name}%0a-precio_unitario:${cart[str(i.id)]['price']}%0a-cantidad:{cart[str(i.id)]['quantity']}%0a-subtotal:{cart[str(i.id)]['subtotal']}%0a----------------"
+        text += f"%0a-nombre_producto:{i.name}%0a-precio_unitario:${cart[str(i.id)]['price']}%0a-cantidad:{cart[str(i.id)]['quantity']}%0a-subtotal:{cart[str(i.id)]['subtotal']}%0a-foto: https://cestore.pythonanywhere.com/{i.default_image.url}"
     # If the checkout form was submitted, create a message with the form data and the order information
     if request.POST:
         checkout_form = CheckoutForm(request.POST)
         if checkout_form.is_valid:
-            first_name = request.POST['first_name']
-            address = request.POST['address']
-            mobile_number = request.POST['phone_number']
-            ship_text = f"---------Pedido{shipping.id}---------%0a*Nombre*: {first_name}%0a*Address*: {address}%0a*Mobile_number*: https://wa.me/{mobile_number} %0a*Precio Total*: ${shipping.total_income}%0a*Fecha del shipping*: {shipping.date_created}%0a....*Productos Pedidos*....{text}"
+            nombre = request.POST['nombre']
+            numero_telefonico = request.POST['numero_telefonico']
+            direccion = request.POST['direccion'] if "shipping" in request.session and "Elige domicilio" not in request.session["shipping"] else None
     # If the checkout form was not submitted, create a message with the user data and the order information
-
+    if "shipping" in request.session and "Elige domicilio" not in request.session["shipping"]:
+        ship_text = f"YEN-316%0a*Fecha de entrega*: {date}%0a*Nombre*: {nombre}%0a*Teléfono*: {numero_telefonico} %0a*Importe Total*: ${shipping.total_income}%0a%0a*Productos Pedidos*{text}%0a................%0a*Dirección:{request.session['shipping']}/{direccion}*"
     else:
-        ship_text = f"---------Pedido{shipping.id}---------%0a*Nombre*: {shipping.user.first_name}%0a*Address*: {shipping.user.client.address}%0a*Mobile_number*: https://wa.me/{shipping.user.client.mobile_number} %0a*Precio Total*: ${shipping.total_income}%0a*Fecha del shipping*: {shipping.date_created}%0a....*Productos Pedidos*....{text}"
-
+        ship_text = f"YEN-316%0a*Fecha de recogida*:{date}%0a*Nombre*: {nombre}%0a*Teléfono*: {numero_telefonico} %0a*Importe Total*: ${shipping.total_income}%0a%0a*Productos Pedidos*{text}%0a................%0a*Domicilio: NO*"
     return ship_text
 
 def send_whatsapp(ship_text):

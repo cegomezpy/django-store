@@ -4,7 +4,7 @@
 <div style="color: rgb(32, 30, 30); font-size: large;font-family: sans-serif;" class="intro">
     <form class="form" method="POST" action="">
         {% csrf_token%}
-        {{form | crispy}}
+        {{form.as_p}}
         <button type="submit" class="btn btn-success">Iniciar Sesión</button>
     </form>
     <a href="{% url 'Auth'%}" class="fs-6 link-offset-2 link-underline link-underline-opacity-50" style="color: blue">No tienes cuenta?</a>

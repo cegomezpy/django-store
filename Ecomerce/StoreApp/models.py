@@ -1,4 +1,3 @@
-from typing import Any
 from django.db import models
 from imagekit.models import ImageSpecField
 from imagekit.processors import Thumbnail

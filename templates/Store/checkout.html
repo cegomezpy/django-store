@@ -13,21 +13,19 @@
             <div id="danger">
                 {% if "cart" not in request.session %}
                 <div class="alert alert-danger mt-3" role="alert">
-                  No products in the cart yet
+                  No hay productos en el carrito
                 </div>
                 {% endif %}
             </div>
             {% if user.is_authenticated %}
             <div class="bg-light p-30 mb-5">
-                <h6>Name: </h6>
-                <p>{{ user.nombre }}</p>
-                <h6>LastName: </h6>
-                <p>{{ user.apellidos }}</p>
-                <h6>email: </h6>
+                <h6>Nombre: </h6>
+                <p>{{ user.first_name }}</p>
+                <h6>Email: </h6>
                 <p>{{ user.email }}</p>
-                <h6>Address: </h6>
+                <h6>Dirección: </h6>
                 <p>{{ user.client.direccion }}</p>
-                <h6>Mobile Number: </h6>
+                <h6>Número telefónico: </h6>
                 <p>{{ user.client.numero_telefonico }}</p>
                 <a href="{% url 'shipping' %}" class="btn btn-primary">Realizar pedido</a>
             </div>
@@ -35,8 +33,46 @@
             <div class="bg-light p-30 mb-5">
                 <form method="post" action="{% url 'shipping' %}">
                     {% csrf_token %}
-                    {{ checkout_form.as_p }}
-                    <button type="submit" class="btn btn-primary">Realizar pedido</button>
+                    <div class="p-2">
+                        <h5>{{ checkout_form.nombre.label }}</h5>
+                        {{ checkout_form.nombre }}
+                        {{ checkout_form.nombre.errors }}
+                    </div>
+                    <div class="p-2">
+                        <h5>{{ checkout_form.email.label }}</h5>
+                        {{ checkout_form.email }}
+                        {{ checkout_form.email.errors }}
+                    </div>
+                    <div class="p-2">
+                        <h5>{{ checkout_form.numero_telefonico.label }}</h5>
+                        {{ checkout_form.numero_telefonico }}
+                        {{ checkout_form.numero_telefonico.errors }}
+                    </div>
+                    {% if "shipping" in request.session and "Elige domicilio" not in request.session.shipping %}
+                    <div class="p-2">
+                        <h5>{{ checkout_form.direccion.label }}</h5>
+                        {{ checkout_form.direccion }}
+                        {{ checkout_form.direccion.errors }}
+                    </div>
+                    <div class="p-2">
+                        <h5>{{ checkout_form.prueba_que_eres_humano.label }}</h5>
+                        {{ checkout_form.prueba_que_eres_humano }}
+                        {{ checkout_form.prueba_que_eres_humano.errors }}
+                    </div>
+                    <p>* Su pedido será entregado dentro de 48h luego de realizado.</p>
+                    <p>* El horario de entrega es de 12 p.m a 5 p.m.</p>
+                    <p>* Si no está disponible en este horario, por favor, comunicar a quien reciba su pedido.</p>
+                    <p>* Si desea asegurar que su pedido sea entregado luego de pasadas las 48h deberá pagar por adelantado.</p>
+                    {% else %}
+                    <div class="p-2">
+                        <h5>{{ checkout_form.prueba_que_eres_humano.label }}</h5>
+                        {{ checkout_form.prueba_que_eres_humano }}
+                        {{ checkout_form.prueba_que_eres_humano.errors }}
+                    </div>
+                    <p>* Si desea domicilio por favor elegir en el carrito su dirección. De no ser así, la dirección se le informará al realizar el pedido.</p>
+                    <p>* Su pedido será guardado por 24h luego de realizado. Si quiere guardar su pedido por más tiempo deberá pagar en adelantado.</p>
+                    {% endif %}
+                    {% if "cart" in request.session %}<button type="submit" class="btn btn-primary">Realizar pedido</button>{% endif %}
                 </form>
             </div>
             {% endif %}
@@ -57,6 +93,14 @@
                         <p>${{ product.subtotal }}</p>
                     </div>
                     {% endfor %}
+                    {% if "shipping" in request.session and "Elige domicilio" not in request.session.shipping %}
+                    <div class="d-flex justify-content-between">
+                        <p>Domicilio</p>
+                        {% for j in request.session.shipping.values %}
+                        <p>${{ j }}</p>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
                 </div>
                 <div class="pt-2">
                     <div class="d-flex justify-content-between mt-2">

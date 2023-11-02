@@ -19,7 +19,7 @@
                             <div class="p-3" style="max-width: 700px;">
                                 <h1 class="display-4 text-white mb-3 animate__animated animate__fadeInDown">{{product.name}}</h1>
                                 <p class="mx-md-5 px-5 animate__animated animate__bounceIn">Products: {{ product.in_stock }}</p>
-                                <a class="btn btn-outline-light py-2 px-4 mt-3 animate__animated animate__fadeInUp" href="{% url 'Details' product.id %}">See product</a>
+                                <a class="btn btn-outline-light py-2 px-4 mt-3 animate__animated animate__fadeInUp" href="{% url 'Details' 'products' product.id %}">See product</a>
                             </div>
                         </div>
                     </div>
@@ -129,7 +129,7 @@
                         {% endfor %}
                         <small style="color: black;" id="review-length-details" class="pt-1">({{ product.review_length }})</small>
                     </div>
-                    <a class="btn btn-primary" href="{% url 'Details' product.id %}" >Details</a>
+                    <a class="btn btn-primary" href="{% url 'Details' 'products' product.id %}" >Details</a>
                     <a class="btn btn-primary add-to-cart" data-product-id="{{ product.id }}" data-csrf-token="{{ csrf_token }}">Add to Cart</a>
                 </div>
             </div>

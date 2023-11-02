@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect
 from django.views.generic import View
 from .forms import CustomUserCreationForm, CustomUserAuthenticationForm
 from django.contrib.auth import login, logout, authenticate
-from django.contrib import messages 
+from django.contrib import messages
 
 
 # Create your views here.
@@ -22,7 +22,7 @@ class UserAuth(View):
             user = form.save()
             login(request, user)
             # Redirect the user to Store
-            return redirect('Store')
+            return redirect('Home')
         # If form is not valid
         else:
             # Get all error messages
@@ -32,9 +32,10 @@ class UserAuth(View):
 # Logout function
 def log_out(request):
     logout(request)
-    return redirect('Store')
+    return redirect('Home')
 # Login function
 def log_in(request):
+    form = CustomUserAuthenticationForm()
     # If POST request
     if request.method == 'POST':
         # Pass request data to form
@@ -49,14 +50,12 @@ def log_in(request):
             # Redirect to Store if user is succesfully authenticated
             if auth:
                 login(request, auth)
-                return redirect('Store')
+                return redirect('Home')
         # If request data not valid get all error messages
         else:
             for msg in form.error_messages:
                 messages.error(request, form.error_messages[msg])
-            return render(request, 'login.html', {'form':form})
     # If not POST return empty form with errors
-    form = CustomUserAuthenticationForm()
     for msg in form.error_messages:
         messages.error(request, form.error_messages[msg])
     return render(request, 'login.html', {'form':form})

@@ -121,6 +121,8 @@ def delete_product(request):
         if product_id in request.session['cart']:
             # Delete the product from the cart dictionary and set the session as modified
             del request.session["cart"][product_id]
+            if len(request.session["cart"]) == 0:
+                del request.session["cart"]
             request.session.modified = True
             # Set the data for the delete-product response
             data = {"message": "Producto eliminado",
@@ -172,12 +174,12 @@ def set_shipping(request):
 
 def get_shipping_places():
     shipping_places = {
-        "No quiero domicilio":0,
+        "Elige domicilio":0,
         "10 de octubre":{
             "Lawton": 375,
             "Luyano": 375,
             "10/10(Otros)": 350,},
-        "Arroyo Naranjo":{ 
+        "Arroyo Naranjo":{
             "Mantilla": 450,
             "Calvario": 450,
             "Párraga": 450,
@@ -191,13 +193,13 @@ def get_shipping_places():
             "Santiago de las Vegas": 500,
             "Managua": 600,
             "Sierra":550,
-            "El Chico":550, 
-            "El Cano":550, 
+            "El Chico":550,
+            "El Cano":550,
             "Rincón": 550,
             "Boyeros(Otros)": 400,},
         "Centro Habana": 325,
         "Cerro": 350,
-        "Cotorro":{ 
+        "Cotorro":{
             "Cuatro Camino": 600,
             "Cotorro(Otros)":550,},
         "Guanabacoa":{

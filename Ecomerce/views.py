@@ -2,7 +2,6 @@
 from django.db.models import Count
 from django.shortcuts import render
 from .StoreApp.models import Product, Category
-from .StoreApp.views import annotate_rating
 
 def index(request):
 

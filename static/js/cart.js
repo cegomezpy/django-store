@@ -57,6 +57,7 @@ $('.quantity-btn').on('click', function() {
  $('.shipping-button').on('click', function() {
   var shippingKey = $(this).attr('key');
   var csrfToken = $(this).attr('data-csrf-token');
+  $('#shipping-tag').text("Cargando...");
   selectShipping(shippingKey, csrfToken);
 });
 
@@ -66,11 +67,11 @@ $('.quantity-btn').on('click', function() {
   // Debounce function
   function debounce(func, delay) {
     let timerId;
-  
+
     return function() {
       const context = this;
       const args = arguments;
-      
+
       clearTimeout(timerId);
       timerId = setTimeout(() => {
         func.apply(context, args);
@@ -96,7 +97,7 @@ $('.quantity-btn').on('click', function() {
       console.log("Is valid");
       if (price !== undefined){
         var subtotal = (parseInt(quantity) * parseFloat(price)).toFixed(2);
-        // Set the new subtotal value 
+        // Set the new subtotal value
         $("#subtotal-"+product_id).text('$' + subtotal);
       }
       data[product_id] = quantity;
@@ -113,7 +114,7 @@ $('.quantity-btn').on('click', function() {
       quantity = 1;
       return false;
     }
-  };  
+  };
 
   // Add to cart query
   function addToCart(quantity, productId, csrfToken) {
@@ -136,13 +137,13 @@ $('.quantity-btn').on('click', function() {
         $('#response-message').text(response.message);
         $('#popup').fadeIn(500).delay(2000).fadeOut(500);
         console.log(response.message);
-        if (response.message !== "The product is already in the cart" && response.message !== "There are only "+response.in_stock.toString()+" products left"){
+        if (response.message !== "El producto ya está en el carrito" && response.message !== "Solo quedan "+response.in_stock.toString()+" productos"){
           var quantity_badge = parseInt($('.cart-quantity-badge').text()) + 1;
           $('.cart-quantity-badge').text(quantity_badge);
         }
       },
       error: function (response) {
-        $('#response-message').text("An error has ocurred, please add the product again");
+        $('#response-message').text("Por favor, revise su conexión y vuelva a intentarlo");
         $('#popup').fadeIn(500).delay(2000).fadeOut(500);
       }
     });
@@ -168,7 +169,7 @@ $('.quantity-btn').on('click', function() {
         }
       });
     };
-  
+
   // Delete product query
   function deleteProduct(product_id) {
     $.ajax({
@@ -184,7 +185,7 @@ $('.quantity-btn').on('click', function() {
         console.log(response.message)
         // Remove the table row for the deleted product
         $('#row-' + product_id).remove();
-        // Set the new total value 
+        // Set the new total value
         $("#total-import").text(response.total);
         var quantity_badge = parseInt($('.cart-quantity-badge').text()) - 1;
         $('.cart-quantity-badge').text(quantity_badge);
@@ -215,5 +216,4 @@ $('.quantity-btn').on('click', function() {
       }
     });
   }
-
 });
